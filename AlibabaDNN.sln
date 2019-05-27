@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "AlibabaDNN", "AlibabaDNN\AlibabaDNN.pyproj", "{7A6AA710-FE37-41BB-BBE5-E421518D15AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7A6AA710-FE37-41BB-BBE5-E421518D15AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A6AA710-FE37-41BB-BBE5-E421518D15AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF80DF7C-BDEF-40A2-8970-7424366F24A7}
+	EndGlobalSection
+EndGlobal
