@@ -11,9 +11,35 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.optimizers import RMSprop
 
-def ReadFile():
-	train_data = pd.read_csv('Data/train.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=100)
-	return train_data.groupby(['Log_Date', 'FROM', 'TO']).size()
+witchFile = ''
+
+def ReadFile(status):
+	global witchFile
+
+	if status == 1:
+		data = pd.read_csv('Data/train.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=100)
+
+		newData = pd.DataFrame(data)		
+		newData['newColumn'] = 0		
+		newData.to_csv('Data/train1.csv')
+						
+		witchFile = 'Data/train1'
+
+		return newData,newData.groupby(['Log_Date', 'FROM', 'TO']).size()
+	else:
+		data = pd.read_csv('Data/test.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=100)
+
+		newData = pd.DataFrame(data)		
+		newData['newColumn'] = 0		
+		newData.to_csv('Data/test1.csv')
+
+		witchFile = 'Data/test1.csv'
+
+		return newData,newData.groupby(['Log_Date', 'FROM', 'TO']).size()
+
+def WriteToCSV(csv,row,column,value):
+	csv.at[row, column] = value
+	csv.to_csv(witchFile + '.csv', index=False)
 
 def DateBreaker(train_data):
 	day = []
@@ -57,11 +83,16 @@ def OneHotEncoding(input):
 	print(inverted)
 
 if __name__ == '__main__':	
-	train_label = ReadFile()
+	status = 1
+	data,train_label = ReadFile(status)
 
-	day, month, dayOfWeekNum, monthOfYearNum = DateBreaker(train_data)
-	# OneHotEncoding(month)
+	#test
+	WriteToCSV(data,1,'newColumn',2)
+	#test
+
+	day, month, dayOfWeekNum, monthOfYearNum = DateBreaker(data)
 
 	model = Sequential()
 	model.add(Dense(8, activation = 'relu', input_shape = (10,)))
+
 	print('finish')
