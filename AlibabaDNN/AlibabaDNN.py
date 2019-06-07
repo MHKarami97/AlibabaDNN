@@ -2,6 +2,7 @@ import csv
 import jdatetime
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 from copy import deepcopy
 from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
@@ -16,7 +17,7 @@ def ReadFile(status):
 	global witchFile
 
 	if status == 1:
-		data = pd.read_csv('Data/train.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=100)
+		data = pd.read_csv('Data/train.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=10000)
 
 		newData = pd.DataFrame(data)
 		newData['newColumn'] = 0
@@ -26,7 +27,7 @@ def ReadFile(status):
 
 		return newData,newData.groupby(['Log_Date', 'FROM', 'TO']).size()
 	else:
-		data = pd.read_csv('Data/test.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=100)
+		data = pd.read_csv('Data/test.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=10000)
 
 		newData = pd.DataFrame(data)
 		newData['newColumn'] = 0
@@ -50,16 +51,14 @@ def preprocess(train_data,train_label_values):
         dic.__setitem__(train_label_titles[j], train_label_values[j])    
 
     train_data = deepcopy(train_data.values)
-    train_label_values = deepcopy(train_label_values.values)
-
+    
     i = 0
-    counter = []    
-    train_label = []
-    temp = np.resize(train_data, (6000, 9))
+    train_label = np.array([])
+    temp = np.resize(train_data, (10000, 9))
 
     for td in train_data:
         label = (td[0], td[2], td[3])
-        train_label.append(dic[label])
+        train_label = np.append(train_label, dic[label])
         date = jdatetime.datetime.strptime(td[0], "%Y/%m/%d")
 
         d = date.day
@@ -81,23 +80,20 @@ def preprocess(train_data,train_label_values):
 
     # train_label = keras.utils.to_categorical(train_label_values, 1)
     # test_label = keras.utils.to_categorical(test_label, 10)
-    train_label = np.array(train_label)
-    train_label = train_label.astype('float32')
-
-    if i != 100:
-        temp = temp.astype('float32')
+    #train_label = train_label.astype('float32')  
+    #temp = temp.astype('float32')
 
     return temp, train_label
 
 def create_model():
     model = Sequential()
-    model.add(Dense(10, activation='relu', input_shape=(9,)))
+    model.add(Dense(20, activation='relu', input_shape=(9,)))
     model.add(Dropout(0.2))
-    model.add(Dense(8, activation='relu'))
+    model.add(Dense(15, activation='relu'))
     model.add(Dropout(0.2))
-    model.add(Dense(4, activation='relu'))
+    model.add(Dense(10, activation='relu'))
     model.add(Dropout(0.2))
-    model.add(Dense(1, activation='softmax'))
+    model.add(Dense(5, activation='softmax'))
     model.compile(loss='categorical_crossentropy',
                   optimizer=RMSprop(),
                   metrics=['accuracy'])
@@ -109,11 +105,13 @@ def create_model():
 def train_model(model):
     #print(train_data[:1000])
     #model.cast(train_label, tf.float32)
-    history = model.fit(train_data[:1000], train_label[:1000],
-                        batch_size=500,
-                        epochs=100,
+    #aa = tf.cast(train_data[:1000], tf.int32)
+    #bb = tf.cast(train_label[:1000], tf.int32)
+    history = model.fit(train_data[:9000], train_label[:9000],
+                        batch_size=100,
+                        epochs=10,
                         verbose=2,
-                        validation_data=(train_data[5000:6000], train_label[5000:6000]))
+                        validation_data=(train_data[9000:10000], train_label[9000:10000]))
 
     score = model.evaluate(train_data[5000:6000], train_label[5000:6000], verbose=0)
     print('Test loss:', score[0])
@@ -142,6 +140,7 @@ def Draw(train_data,model):
             # plt.title('Prediction: %d Label: %d' % (predicted_number, label))
             # plt.imshow(test_data, cmap=plt.get_cmap('gray_r'))
             # plt.show()
+
 if __name__ == '__main__':	
 	status = 1
 	data,train_label = ReadFile(status)
