@@ -6,9 +6,9 @@ from copy import deepcopy
 from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import RMSprop
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.optimizers import RMSprop
+from tensorflow.python.keras.layers import Dense, Dropout
 
 witchFile = ''
 
@@ -18,8 +18,8 @@ def ReadFile(status):
 	if status == 1:
 		data = pd.read_csv('Data/train.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=100)
 
-		newData = pd.DataFrame(data)		
-		newData['newColumn'] = 0		
+		newData = pd.DataFrame(data)
+		newData['newColumn'] = 0
 		newData.to_csv('Data/train1.csv')
 						
 		witchFile = 'Data/train1'
@@ -28,8 +28,8 @@ def ReadFile(status):
 	else:
 		data = pd.read_csv('Data/test.csv', sep=',', low_memory=0, usecols=[1, 2, 3, 4, 5, 7], nrows=100)
 
-		newData = pd.DataFrame(data)		
-		newData['newColumn'] = 0		
+		newData = pd.DataFrame(data)
+		newData['newColumn'] = 0
 		newData.to_csv('Data/test1.csv')
 
 		witchFile = 'Data/test1.csv'
@@ -83,7 +83,9 @@ def preprocess(train_data,train_label_values):
     # test_label = keras.utils.to_categorical(test_label, 10)
     train_label = np.array(train_label)
     train_label = train_label.astype('float32')
-    temp = temp.astype('float32')
+
+    if i != 100:
+        temp = temp.astype('float32')
 
     return temp, train_label
 
@@ -105,7 +107,8 @@ def create_model():
     return model
 
 def train_model(model):
-    print(train_data[:1000])
+    #print(train_data[:1000])
+    #model.cast(train_label, tf.float32)
     history = model.fit(train_data[:1000], train_label[:1000],
                         batch_size=500,
                         epochs=100,
