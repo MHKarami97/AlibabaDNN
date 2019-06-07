@@ -1,15 +1,14 @@
 import csv
 import jdatetime
-import calendar
 import numpy as np
 import pandas as pd
-from numpy import argmax
+from copy import deepcopy
+from tensorflow import keras
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
-from tensorflow import keras
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.optimizers import RMSprop
+from tensorflow.keras.layers import Dense, Dropout
 
 witchFile = ''
 
@@ -41,32 +40,78 @@ def WriteToCSV(csv,row,column,value):
 	csv.at[row, column] = value
 	csv.to_csv(witchFile + '.csv', index=False)
 
-def DateBreaker(train_data):
-	day = []
-	dayOfWeekNum = []
-	monthOfYearNum = []
-	seasonNum = []
-	train = train_data.values
-	for td in train_data['Log_Date']:
-		date = jdatetime.datetime.strptime(td,"%Y/%m/%d")
+def preprocess(train_data,train_label_values):
+    global temp
+    
+    train_label_titles = train_label_values.index.values
+    
+    dic = {}
+    for j in range(0, len(train_label_values)):
+        dic.__setitem__(train_label_titles[j], train_label_values[j])    
 
-		d = date.day
-		m = date.strftime("%m")
-		w = date.weekday()
+    train_data = deepcopy(train_data.values)
+    train_label_values = deepcopy(train_label_values.values)
 
-		s = (int(m) % 12 + 3) // 3
-		#train_data['Log_Date'][0] = [d, m, w, s]
-		train[0][0] = d
-		train[0] = np.append(train[0], m)
-		train[0] = np.append(train[0], w)
-		train[0] = np.append(train[0], s)
+    counter = []
+    i = 0
+    train_label = []
+    temp = np.resize(train_data, (6000, 9))
+    for td in train_data:
+        label = (td[0], td[2], td[3])
+        train_label.append(dic[label])
+        date = jdatetime.datetime.strptime(td[0], "%Y/%m/%d")
 
-		day.append(d)
-		dayOfWeekNum.append(date.weekday(w))
-		monthOfYearNum.append(m)
-		seasonNum.append(s)
-	
-	return day, dayOfWeekNum, monthOfYearNum	
+        d = date.day
+        m = date.strftime("%m")
+        w = date.weekday()
+
+        s = (int(m) % 12 + 3) // 3
+        temp[i][0] = d
+        temp[i][1] = int(m)
+        temp[i][2] = w
+        temp[i][3] = s
+        temp[i][4] = td[1]
+        temp[i][5] = td[2]
+        temp[i][6] = td[3]
+        temp[i][7] = td[4]
+        temp[i][8] = td[5]
+        i += 1
+
+    # train_label = keras.utils.to_categorical(train_label_values, 1)
+    # test_label = keras.utils.to_categorical(test_label, 10)
+    train_label = np.array(train_label)
+    train_label = train_label.astype('float32')
+    temp = temp.astype('float32')
+    return temp, train_label
+
+def create_model():
+    model = Sequential()
+    model.add(Dense(10, activation='relu', input_shape=(9,)))
+    model.add(Dropout(0.2))
+    model.add(Dense(8, activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(Dense(4, activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(Dense(1, activation='softmax'))
+    model.compile(loss='sparse_categorical_crossentropy',
+                  optimizer=RMSprop(),
+                  metrics=['accuracy'])
+
+    model.summary()
+
+    return model
+
+def train_model(model):
+    print(train_data[:1000])
+    history = model.fit(train_data[:1000], train_label[:1000],
+                        batch_size=500,
+                        epochs=100,
+                        verbose=2,
+                        validation_data=(train_data[5000:6000], train_label[5000:6000]))
+
+    score = model.evaluate(train_data[5000:6000], train_label[5000:6000], verbose=0)
+    print('Test loss:', score[0])
+    print('Test accuracy:', score[1])
 
 def OneHotEncoding(input):
 	values = array(input)
@@ -82,17 +127,32 @@ def OneHotEncoding(input):
 	inverted = label_encoder.inverse_transform([argmax(onehot_encoded[0, :])])
 	print(inverted)
 
+def Draw(train_data,model):
+	for x in range(5000, 6000):
+		test_data = train_data[x,:].reshape((9,))
+		predicted_number = model.predict(test_data).argmax()
+		label = train_label[x].argmax()
+        # if (predicted_number != label):
+            # plt.title('Prediction: %d Label: %d' % (predicted_number, label))
+            # plt.imshow(test_data, cmap=plt.get_cmap('gray_r'))
+            # plt.show()
+
 if __name__ == '__main__':	
 	status = 1
 	data,train_label = ReadFile(status)
 
+	train_data, train_label = preprocess(data,train_label)
+
+	model = create_model()
+
+	train_model(model)
+
+	Draw(train_data,model)
+
 	#test
-	WriteToCSV(data,1,'newColumn',2)
+	#WriteToCSV(data,1,'newColumn',2)
 	#test
 
-	day, month, dayOfWeekNum, monthOfYearNum = DateBreaker(data)
-
-	model = Sequential()
-	model.add(Dense(8, activation = 'relu', input_shape = (10,)))
+	#day, month, dayOfWeekNum, monthOfYearNum = DateBreaker(data)
 
 	print('finish')
