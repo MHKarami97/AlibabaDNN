@@ -52,10 +52,11 @@ def preprocess(train_data,train_label_values):
     train_data = deepcopy(train_data.values)
     train_label_values = deepcopy(train_label_values.values)
 
-    counter = []
     i = 0
+    counter = []    
     train_label = []
     temp = np.resize(train_data, (6000, 9))
+
     for td in train_data:
         label = (td[0], td[2], td[3])
         train_label.append(dic[label])
@@ -64,8 +65,8 @@ def preprocess(train_data,train_label_values):
         d = date.day
         m = date.strftime("%m")
         w = date.weekday()
-
         s = (int(m) % 12 + 3) // 3
+
         temp[i][0] = d
         temp[i][1] = int(m)
         temp[i][2] = w
@@ -75,6 +76,7 @@ def preprocess(train_data,train_label_values):
         temp[i][6] = td[3]
         temp[i][7] = td[4]
         temp[i][8] = td[5]
+
         i += 1
 
     # train_label = keras.utils.to_categorical(train_label_values, 1)
@@ -82,6 +84,7 @@ def preprocess(train_data,train_label_values):
     train_label = np.array(train_label)
     train_label = train_label.astype('float32')
     temp = temp.astype('float32')
+
     return temp, train_label
 
 def create_model():
@@ -136,7 +139,6 @@ def Draw(train_data,model):
             # plt.title('Prediction: %d Label: %d' % (predicted_number, label))
             # plt.imshow(test_data, cmap=plt.get_cmap('gray_r'))
             # plt.show()
-
 if __name__ == '__main__':	
 	status = 1
 	data,train_label = ReadFile(status)
