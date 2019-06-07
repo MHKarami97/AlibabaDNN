@@ -103,10 +103,6 @@ def create_model():
     return model
 
 def train_model(model):
-    #print(train_data[:1000])
-    #model.cast(train_label, tf.float32)
-    #aa = tf.cast(train_data[:1000], tf.int32)
-    #bb = tf.cast(train_label[:1000], tf.int32)
     history = model.fit(train_data[:9000], train_label[:9000],
                         batch_size=100,
                         epochs=10,
