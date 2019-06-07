@@ -98,7 +98,7 @@ def create_model():
     model.add(Dense(4, activation='relu'))
     model.add(Dropout(0.2))
     model.add(Dense(1, activation='softmax'))
-    model.compile(loss='sparse_categorical_crossentropy',
+    model.compile(loss='categorical_crossentropy',
                   optimizer=RMSprop(),
                   metrics=['accuracy'])
 
