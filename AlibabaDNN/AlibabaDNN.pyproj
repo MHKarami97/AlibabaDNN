@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>7a6aa710-fe37-41bb-bbe5-e421518d15ab</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>AlibabaDNN.py</StartupFile>
+    <StartupFile>AlibabaDNN2.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AlibabaDNN2.py" />
     <Compile Include="AlibabaDNN.py" />
   </ItemGroup>
   <ItemGroup>
@@ -28,8 +29,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\test.csv" />
+    <Content Include="Data\test1.csv" />
     <Content Include="Data\train.csv" />
     <Content Include="Data\train1.csv" />
+    <Content Include="jupyter_version.ipynb" />
+    <Content Include="poweBI.pbix" />
+    <Content Include="result.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

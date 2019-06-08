@@ -173,11 +173,6 @@ def OneHotEncoding(data,dataTest):
 
         i += 1
 
-       
-
-    #df = df.drop('FROM',axis = 1)
-    #df = df.join(one_hot)
-
     one_hot_d = pd.get_dummies(te1)
     one_hot_m = pd.get_dummies(te2)
     one_hot_w = pd.get_dummies(te3)
@@ -188,56 +183,13 @@ def OneHotEncoding(data,dataTest):
 
     print(one_hot_date)
     print('-------------------')
-    print(one_hot_from)
-
-    #test.head(1)
-    ## limit to categorical data using df.select_dtypes()
-    #test = test.select_dtypes(include=[object])
-    #test.head(1)
-    #le = preprocessing.LabelEncoder()
-
-
-    ## 2/3.  FIT AND TRANSFORM
-    ## use df.apply() to apply le.fit_transform to all columns
-    #X_2 = test.apply(le.fit_transform)
-    #X_2.head()
-    ## 1.  INSTANTIATE
-    #enc = preprocessing.OneHotEncoder()
-
-    ## 2.  FIT
-    #enc.fit(X_2)
-
-    ## 3.  Transform
-    #onehotlabels = enc.transform(X_2).toarray()
-    #onehotlabels.shape
-
-    ## as you can see, you've the same number of rows 891
-    ## but now you've so many more columns due to how we changed all the
-    ## categorical data into numerical data
-
-    #print(onehotlabels)
-
-    #values = np.array(input)
-    #label_encoder = LabelEncoder()
-    #integer_encoded = label_encoder.fit_transform(values)
-    #print(integer_encoded)
-    ## binary encode
-    #onehot_encoder = OneHotEncoder(sparse=False)
-    #integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
-    #onehot_encoded = onehot_encoder.fit_transform(integer_encoded)
-    #print(onehot_encoded)
-    ## invert first example
-    #inverted = label_encoder.inverse_transform([argmax(onehot_encoded[0, :])])
-    #print(inverted)
+    
 def Draw(train_data,model):
 	for x in range(5000, 6000):
 		test_data = train_data[x,:].reshape((9,))
 		predicted_number = model.predict(test_data).argmax()
 		label = train_label[x].argmax()
-        # if (predicted_number != label):
-            # plt.title('Prediction: %d Label: %d' % (predicted_number, label))
-            # plt.imshow(test_data, cmap=plt.get_cmap('gray_r'))
-            # plt.show()
+        
 if __name__ == '__main__':	
     status = 1
     data,train_label = ReadFile(status)

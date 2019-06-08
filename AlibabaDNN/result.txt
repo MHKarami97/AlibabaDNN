@@ -1,0 +1,24 @@
+2.9638
+2.9276
+2.8970
+2.8110
+2.7479
+2.7279 (Dense 1) => Dense(650, activation='relu', input_shape=(208,))
+		 => Dense(500, activation='relu')
+		 => Dense(650, activation='relu')
+		 => Dense(92, activation='softmax')
+
+2.7090 (Dense 1) => Dense(650, activation='relu', input_shape=(208,))
+		 => Dense(500, activation='relu')
+		 => Dense(800, activation='relu')
+		 => Dense(92, activation='softmax')
+
+2.6720 (Dense 1) => Dense(700, activation='relu', input_shape=(208,))
+		 => Dense(650, activation='relu')
+		 => Dense(800, activation='relu')
+		 => Dense(92, activation='softmax')
+
+2.6430(Dense 1) => Dense(700, activation='relu', input_shape=(208,))
+		 => Dense(720, activation='relu')
+		 => Dense(800, activation='relu')
+		 => Dense(92, activation='softmax')
