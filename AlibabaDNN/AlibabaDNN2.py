@@ -90,8 +90,7 @@ def preprocess_train(data, label):
     source = keras.utils.to_categorical(temp[3:, 4])
     destination = keras.utils.to_categorical(temp[4:, 5])
 
-    df = pd.concat(
-        [pd.DataFrame(data=day), pd.DataFrame(data=month), pd.DataFrame(data=weekday), pd.DataFrame(data=season),
+    df = pd.concat([pd.DataFrame(data=day), pd.DataFrame(data=month), pd.DataFrame(data=weekday), pd.DataFrame(data=season),
          pd.DataFrame(data=source), pd.DataFrame(data=destination)], axis=1)
 
     train_label = keras.utils.to_categorical(train_label)
@@ -137,8 +136,7 @@ def preprocess_test(data):
     source = keras.utils.to_categorical(temp[3:, 4])
     destination = keras.utils.to_categorical(temp[4:, 5])
 
-    df = pd.concat(
-        [pd.DataFrame(data=day), pd.DataFrame(data=month), pd.DataFrame(data=weekday), pd.DataFrame(data=season),
+    df = pd.concat([pd.DataFrame(data=day), pd.DataFrame(data=month), pd.DataFrame(data=weekday), pd.DataFrame(data=season),
          pd.DataFrame(data=source), pd.DataFrame(data=destination)], axis=1)
 
     return df.values
